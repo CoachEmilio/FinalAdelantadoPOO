@@ -4,7 +4,6 @@ import org.uade.controllers.PrestamoController;
 import org.uade.controllers.ClienteController;
 import org.uade.models.Prestamo;
 import org.uade.models.Cliente;
-import org.uade.models.CajaAhorro;
 
 import javax.swing.*;
 import java.awt.*;
