@@ -1,28 +1,89 @@
 @startuml
+  ' Diagrama de clases - Banco Gestión de Préstamos
 
-'https://plantuml.com/class-diagram
+  class Cliente {
+    -nroCliente: int
+    -documento: string
+    -nombreCompleto: string
+    -domicilioLegal: string
+    -cajaAhorro: CajaAhorro
+    +getNroCliente(): int
+    +getCajaAhorro(): CajaAhorro
+  }
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
+  class CajaAhorro {
+    -saldo: float
+    -listadoOperaciones: List<Operacion>
+    +acreditarDinero(dinero: float): void
+    +debitarDinero(dinero: float): void
+    +registrarOperacion(fecha: Date, tipo: TipoOperacion, monto: float): void
+    +listarOperaciones(): List<Operacion>
+    +getSaldo(): float
+  }
 
-List <|-- AbstractList
-Collection <|-- AbstractCollection
+  class Operacion {
+    -fecha: Date
+    -tipo: TipoOperacion
+    -monto: float
+    +Operacion(fecha: Date, tipo: TipoOperacion, monto: float)
+  }
 
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
+  enum TipoOperacion {
+    INGRESO
+    EXTRACCION
+  }
 
-class ArrayList {
-Object[] elementData
-size()
-}
+  abstract class Prestamo {
+    -nroPrestamo: int
+    -fechaOtorgamiento: Date
+    -montoPrestado: float
+    -plazoEnMeses: int
+    -tasaAnual: float
+    -nroClienteSolicitante: int
+    -valorCuota: float
+    -cuotasRestantes: int
+    +obtenerValorDeCuota(): float
+    +getNroCliente(): int
+    +getCuotasRestantes(): int
+  }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
-}
+  class PrestamoPersonal {
+    +PrestamoPersonal(montoAPrestar: float, plazoEnMeses: int, tasaAnual: float, nroCliente: int)
+  }
 
-@enduml
+  class PrestamoHipotecario {
+    -nroClienteGarante: int
+    +modificarTasaAnual(tasa: float): void
+    +PrestamoHipotecario(montoAPrestar: float, plazoEnMeses: int, tasaAnual: float, nroCliente: int, nroClienteGarante: int)
+  }
+
+  class ClienteController {
+    -listadoClientes: List<Cliente>
+    +buscarCliente(nroCliente: int): void
+    +listarOperaciones(nroCliente: int): List<Operacion>
+    +solicitarPrestamo(nroCliente: int, montoPrestado: float, plazoEnMeses: int): void
+  }
+
+  class PrestamoController {
+    -listadoPrestamos: List<Prestamo>
+    +registrarPrestamoHipotecario(montoAPrestar: float, plazoEnMeses: int, tasaAnual: float, nroCliente: int, nroClienteGarante: int): void
+    +pagarCuotaPrestamo(nroPrestamo: int): void
+    +consultarCuotasPendientes(nroPrestamo: int): int
+    +consultarCuotasSaldadas(nroPrestamo: int): int
+    +buscarPrestamoActivoPorCliente(nroCliente: int): Prestamo
+    +buscarPrestamo(nroPrestamo: int): Prestamo
+    +registrarPrestamoPersonal(montoAPrestar: float, plazoEnMeses: int, tasaAnual: float, nroCliente: int): void
+  }
+
+  ' Relaciones y multiplicidades
+  Cliente "1" -- "1" CajaAhorro
+  ClienteController "1" -- "0..*" Cliente
+  CajaAhorro "1" -- "1..*" Operacion
+  PrestamoController "1" -- "0..*" Prestamo
+  Prestamo <|-- PrestamoPersonal
+  Prestamo <|-- PrestamoHipotecario
+
+  ' Asociación débil entre controllers
+  ClienteController "1" --> "1" PrestamoController : asociación
+
+  @enduml
