@@ -1,15 +1,40 @@
 @startuml
-'https://plantuml.com/sequence-diagram
+actor Cliente
+participant "PrestamoController" as PC
+participant "Prestamo" as P
+participant "ClienteController" as CC
+participant "Cliente" as C
+participant "CajaAhorro" as CA
 
-autonumber
+' El cliente solicita pagar la cuota mensual de un préstamo
+Cliente -> PC: pagarCuotaPrestamo(nroPrestamo)
+activate PC
 
-== Initialization ==
+' El controller busca el préstamo por su número
+PC -> P: buscarPrestamo(nroPrestamo)
+activate P
+PC <-- P: Prestamo
+deactivate P
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+' El controller busca el cliente asociado al préstamo
+PC -> CC: buscarClientePorNro(P.getNroCliente())
+activate CC
+PC <-- CC: Cliente
+deactivate CC
 
-== Repetition ==
+' Se obtiene la caja de ahorro del cliente
+PC -> C: getCajaAhorro()
+activate C
+PC -> CA: debitarDinero(valorCuota)
+activate CA
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
-@enduml
+' Se registra la operación de extracción en la caja de ahorro
+PC -> CA: registrarOperacion(fecha, EXTRACCION, valorCuota)
+deactivate CA
+deactivate C
+
+' Se confirma el pago al cliente
+PC --> Cliente: cuota pagada
+deactivate PC
+
+@endumluml

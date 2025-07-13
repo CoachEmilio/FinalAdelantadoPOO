@@ -1,15 +1,51 @@
 @startuml
-'https://plantuml.com/sequence-diagram
+actor Cliente
+participant "ClienteController" as CC
+participant "PrestamoController" as PC
+participant "Cliente" as C
+participant "CajaAhorro" as CA
+participant "Cliente (Garante)" as CG
 
-autonumber
+' El cliente solicita emitir un préstamo hipotecario
+Cliente -> CC: solicitarPrestamoHipotecario(nroCliente, monto, plazo, tasa, nroClienteGarante)
+activate CC
 
-== Initialization ==
+' El controller busca el cliente solicitante
+CC -> C: buscarClientePorNro(nroCliente)
+activate C
+CC <-- C: Cliente
+deactivate C
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+' El controller busca el cliente garante
+CC -> CG: buscarClientePorNro(nroClienteGarante)
+activate CG
+CC <-- CG: Cliente (Garante)
+deactivate CG
 
-== Repetition ==
+' El controller delega la creación del préstamo hipotecario
+CC -> PC: registrarPrestamoHipotecario(nroPrestamo, plazo, nroCliente, monto, tasa, nroClienteGarante)
+activate PC
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+' Se crea el objeto PrestamoHipotecario
+PC -> PC: crear PrestamoHipotecario
+
+' Se acredita el dinero en la caja de ahorro del cliente (menos 1% de gastos notariales)
+PC -> C: getCajaAhorro()
+activate C
+PC -> CA: acreditarDinero(monto - gastosNotariales)
+activate CA
+
+' Se registra la operación de ingreso en la caja de ahorro
+PC -> CA: registrarOperacion(fecha, INGRESO, monto - gastosNotariales)
+deactivate CA
+deactivate C
+
+' Se confirma la operación al controller
+PC --> CC: confirmación
+deactivate PC
+
+' El controller informa al cliente que el préstamo fue emitido
+CC --> Cliente: préstamo hipotecario emitido
+deactivate CC
+
 @enduml
