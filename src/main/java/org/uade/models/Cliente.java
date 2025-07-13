@@ -8,18 +8,18 @@ package org.uade.models;
 •	Caja de ahorro (asociada a cada cliente, permite recibir préstamos y pagar cuotas)
  */
 public class Cliente {
-    private final int nroCliente; // Número de cliente, único y numérico, desde 1000
-    private int dni; // Documento (DNI o pasaporte), clave primaria
-    private final String NombreCompleto; // Nombre completo, obligatorio
-    private String DomicilioLegal; // Domicilio legal, obligatorio
-    private CajaAhorro cajaAhorro; // Caja de ahorro asociada al cliente
+    private final int nroCliente;
+    private final String documento;
+    private final String nombreCompleto;
+    private final String domicilioLegal;
+    private final CajaAhorro cajaAhorro;
 
-
-    public Cliente(int nroCliente, CajaAhorro ca, String juanPerez, String domicilioLegal) {
+    public Cliente(int nroCliente, String documento, CajaAhorro cajaAhorro, String nombreCompleto, String domicilioLegal) {
         this.nroCliente = nroCliente;
-        this.cajaAhorro = ca;
-        this.NombreCompleto = juanPerez;
-        this.DomicilioLegal = domicilioLegal;
+        this.documento = documento;
+        this.cajaAhorro = cajaAhorro;
+        this.nombreCompleto = nombreCompleto;
+        this.domicilioLegal = domicilioLegal;
     }
 
     public int getNroCliente() {
