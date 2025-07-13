@@ -1,6 +1,5 @@
 package org.uade.models;
 
-import org.uade.models.*;
 /*
 •	Documento (DNI o pasaporte, clave primaria)
 •	Nombre completo (obligatorio)
@@ -9,9 +8,9 @@ import org.uade.models.*;
 •	Caja de ahorro (asociada a cada cliente, permite recibir préstamos y pagar cuotas)
  */
 public class Cliente {
-    private int nroCliente; // Número de cliente, único y numérico, desde 1000
+    private final int nroCliente; // Número de cliente, único y numérico, desde 1000
     private int dni; // Documento (DNI o pasaporte), clave primaria
-    private String NombreCompleto; // Nombre completo, obligatorio
+    private final String NombreCompleto; // Nombre completo, obligatorio
     private String DomicilioLegal; // Domicilio legal, obligatorio
     private CajaAhorro cajaAhorro; // Caja de ahorro asociada al cliente
 

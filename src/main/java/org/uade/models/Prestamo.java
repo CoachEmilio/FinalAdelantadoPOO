@@ -12,7 +12,6 @@ package org.uade.models;
 */
 
 import java.time.LocalDateTime;
-import org.uade.models.*;
 
 public abstract class Prestamo {
     protected int nroPrestamo; // Número único del préstamo

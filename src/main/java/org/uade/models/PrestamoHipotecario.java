@@ -1,7 +1,5 @@
 package org.uade.models;
 
-import org.uade.models.Prestamo;
-
 public class PrestamoHipotecario extends Prestamo {
     private int nroClienteGarante;
 
