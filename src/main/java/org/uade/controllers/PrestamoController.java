@@ -24,7 +24,8 @@ public class PrestamoController {
         return instance;
     }
 
-    public Prestamo altaPrestamoPersonal(PrestamoPersonalDTO dto) {
+    // Eliminé la duplicacion de código en altaPrestamoPersonal
+    public PrestamoPersonal altaPrestamoPersonal(PrestamoPersonalDTO dto) {
         Cliente cliente = ClienteController.getInstance().buscarClientePorNro(dto.getNroCliente());
         if (cliente == null) return null;
         int nroPrestamo = generarNroPrestamoUnico();
@@ -37,6 +38,13 @@ public class PrestamoController {
             tasaAnual
         );
         listadoPrestamos.add(prestamo);
+
+        // Acreditar dinero y registrar operación
+        CajaAhorro caja = cliente.getCajaAhorro();
+        caja.acreditarDinero(dto.getMontoPrestado());
+        Operacion operacion = new Operacion(LocalDateTime.now(), TipoOperacion.INGRESO, dto.getMontoPrestado());
+        caja.registrarOperacion(operacion);
+
         return prestamo;
     }
 
@@ -48,20 +56,6 @@ public class PrestamoController {
             }
         }
         return max + 1;
-    }
-
-    public PrestamoPersonal registrarPrestamoPersonal(int nroPrestamo, int plazoEnMeses, Cliente cliente, float montoPrestado, float tasaAnual) {
-        PrestamoPersonal prestamo = new PrestamoPersonal(nroPrestamo, plazoEnMeses, cliente.getNroCliente(), montoPrestado, tasaAnual);
-        listadoPrestamos.add(prestamo);
-
-        // Acreditar dinero en la caja de ahorro del cliente
-        CajaAhorro caja = cliente.getCajaAhorro();
-        caja.acreditarDinero(montoPrestado);
-
-        // Registrar operación de ingreso por préstamo
-        caja.registrarOperacion(LocalDateTime.now(), TipoOperacion.INGRESO, montoPrestado);
-
-        return prestamo;
     }
 
     public void registrarPrestamoHipotecario(int nroPrestamo, int plazoEnMeses, int nroCliente, float montoPrestado, float tasaAnual, int nroClienteGarante) {
