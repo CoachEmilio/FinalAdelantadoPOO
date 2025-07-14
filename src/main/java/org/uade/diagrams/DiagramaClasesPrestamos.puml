@@ -34,14 +34,14 @@ enum TipoOperacion {
 }
 
 abstract class Prestamo {
-  -nroPrestamo: int
-  -fechaOtorgamiento: Date
-  -montoPrestado: float
-  -plazoEnMeses: int
-  -tasaAnual: float
-  -nroCliente: int
-  -valorCuota: float
-  -cuotasRestantes: int
+  #nroPrestamo: int
+  #fechaOtorgamiento: Date
+  #montoPrestado: float
+  #plazoEnMeses: int
+  #tasaAnual: float
+  #nroCliente: int
+  #valorCuota: float
+  #cuotasRestantes: int
   +obtenerValorCuota(): float
   +getNroCliente(): int
   +getCuotasRestantes(): int
@@ -82,9 +82,8 @@ Prestamo "1" o-- "1" Cliente
 Prestamo <|-- PrestamoPersonal
 Prestamo <|-- PrestamoHipotecario
 CajaAhorro "1" o-- "0..*" Operacion
-Cliente "1" --o "1" CajaAhorro
+Cliente "1" *-- "1" CajaAhorro
+Operacion "1" -- "0..*" TipoOperacion
 
-' Relación de dependencia: pago de cuota genera operación
-PrestamoController ..> CajaAhorro : pagarCuotaPrestamo()\ngenera Operacion
 
 @enduml

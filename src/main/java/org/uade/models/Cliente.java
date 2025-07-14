@@ -1,5 +1,4 @@
 package org.uade.models;
-
 /*
 •	Documento (DNI o pasaporte, clave primaria)
 •	Nombre completo (obligatorio)
@@ -11,8 +10,8 @@ public class Cliente {
     private final int nroCliente;
     private final String documento;
     private final String nombreCompleto;
-    private final String domicilioLegal;
-    private final CajaAhorro cajaAhorro;
+    private String domicilioLegal;
+    private CajaAhorro cajaAhorro;
 
     public Cliente(int nroCliente, String documento, CajaAhorro cajaAhorro, String nombreCompleto, String domicilioLegal) {
         this.nroCliente = nroCliente;

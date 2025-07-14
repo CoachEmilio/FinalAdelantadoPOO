@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class Operacion {
     private LocalDateTime fecha; // Fecha de la operación
-    private TipoOperacion tipo; // Tipo de operación (ingreso o extracción)
+    private TipoOperacion tipo; //ENUM TYPES - Tipo de operación (ingreso o extracción)
     private float monto; // Monto de la operación
 
     public Operacion(LocalDateTime fecha, TipoOperacion tipo, float monto) {

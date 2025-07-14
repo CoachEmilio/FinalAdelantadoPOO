@@ -1,7 +1,6 @@
 package org.uade.models;
 
 import org.uade.types.TipoOperacion;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
