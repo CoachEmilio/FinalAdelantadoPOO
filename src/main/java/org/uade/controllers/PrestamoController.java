@@ -24,6 +24,14 @@ public class PrestamoController {
         return instance;
     }
 
+    public Prestamo altaPrestamoPersonal(PrestamoPersonalDTO dto) {
+        Cliente cliente = ClienteController.getInstance().buscarClientePorNro(dto.getNroCliente());
+        if (cliente == null) return null;
+        PrestamoPersonal prestamo = new PrestamoPersonal(cliente, dto.getMontoPrestado(), dto.getPlazoEnMeses());
+        prestamos.add(prestamo);
+        return prestamo;
+    }
+
     public void registrarPrestamoPersonal(int nroPrestamo, int plazoEnMeses, int nroCliente, float montoPrestado, float tasaAnual) {
         PrestamoPersonal prestamo = new PrestamoPersonal(nroPrestamo, plazoEnMeses, nroCliente, montoPrestado, tasaAnual);
         listadoPrestamos.add(prestamo);

@@ -39,8 +39,4 @@ public class ClienteController {
         if (cliente == null) return null;
         return cliente.getCajaAhorro().listarOperaciones();
     }
-
-    public void solicitarPrestamo(int nroCliente, float montoPrestado, int plazoEnMeses) {
-        // Implementar lógica de solicitud de préstamo si es necesario
-    }
 }
