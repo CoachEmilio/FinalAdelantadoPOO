@@ -34,16 +34,15 @@ enum TipoOperacion {
 }
 
 abstract class Prestamo {
-  #nroPrestamo: int
+  #cliente: Cliente
   #fechaOtorgamiento: Date
   #montoPrestado: float
   #plazoEnMeses: int
   #tasaAnual: float
-  #nroCliente: int
   #valorCuota: float
   #cuotasRestantes: int
   +obtenerValorCuota(): float
-  +getNroCliente(): int
+  +getCliente(): Cliente
   +getCuotasRestantes(): int
 }
 
@@ -52,7 +51,7 @@ class PrestamoPersonal {
 }
 
 class PrestamoHipotecario {
-  -nroClienteGarante: int
+  -cliente: Cliente
   +modificarTasaAnual(tasa: float): void
   +PrestamoHipotecario(nroPrestamo: int, plazoEnMeses: int, nroCliente: int, montoPrestado: float, tasaAnual: float, nroClienteGarante: int)
 }

@@ -50,9 +50,18 @@ public class PrestamoController {
         return max + 1;
     }
 
-    public void registrarPrestamoPersonal(int nroPrestamo, int plazoEnMeses, int nroCliente, float montoPrestado, float tasaAnual) {
-        PrestamoPersonal prestamo = new PrestamoPersonal(nroPrestamo, plazoEnMeses, nroCliente, montoPrestado, tasaAnual);
+    public PrestamoPersonal registrarPrestamoPersonal(int nroPrestamo, int plazoEnMeses, Cliente cliente, float montoPrestado, float tasaAnual) {
+        PrestamoPersonal prestamo = new PrestamoPersonal(nroPrestamo, plazoEnMeses, cliente.getNroCliente(), montoPrestado, tasaAnual);
         listadoPrestamos.add(prestamo);
+
+        // Acreditar dinero en la caja de ahorro del cliente
+        CajaAhorro caja = cliente.getCajaAhorro();
+        caja.acreditarDinero(montoPrestado);
+
+        // Registrar operación de ingreso por préstamo
+        caja.registrarOperacion(LocalDateTime.now(), TipoOperacion.INGRESO, montoPrestado);
+
+        return prestamo;
     }
 
     public void registrarPrestamoHipotecario(int nroPrestamo, int plazoEnMeses, int nroCliente, float montoPrestado, float tasaAnual, int nroClienteGarante) {

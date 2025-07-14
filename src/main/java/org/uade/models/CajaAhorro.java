@@ -26,8 +26,9 @@ public class CajaAhorro {
         }
     }
 
-    public void registrarOperacion(LocalDateTime fecha, TipoOperacion tipo, float monto){
-        this.listadoOperaciones.add(new Operacion(fecha, tipo, monto));
+    // Ahora recibe una instancia de Operacion
+    public void registrarOperacion(Operacion operacion){
+        this.listadoOperaciones.add(operacion);
     }
 
     public List<Operacion> listarOperaciones(){
