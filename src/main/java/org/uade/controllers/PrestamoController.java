@@ -6,6 +6,7 @@ import org.uade.types.TipoOperacion;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.uade.dtos.PrestamoPersonalDTO;
 
 public class PrestamoController {
     private List<Prestamo> listadoPrestamos;
@@ -39,6 +40,16 @@ public class PrestamoController {
         );
         listadoPrestamos.add(prestamo);
         return prestamo;
+    }
+
+    private int generarNroPrestamoUnico() {
+        int max = 1000;
+        for (Prestamo p : listadoPrestamos) {
+            if (p.getNroPrestamo() > max) {
+                max = p.getNroPrestamo();
+            }
+        }
+        return max + 1;
     }
 
     public void registrarPrestamoPersonal(int nroPrestamo, int plazoEnMeses, int nroCliente, float montoPrestado, float tasaAnual) {
