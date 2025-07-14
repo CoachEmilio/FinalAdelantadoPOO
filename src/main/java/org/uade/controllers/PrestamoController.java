@@ -2,7 +2,6 @@ package org.uade.controllers;
 
 import org.uade.models.*;
 import org.uade.types.TipoOperacion;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +27,8 @@ public class PrestamoController {
     public Prestamo altaPrestamoPersonal(PrestamoPersonalDTO dto) {
         Cliente cliente = ClienteController.getInstance().buscarClientePorNro(dto.getNroCliente());
         if (cliente == null) return null;
-        // Asigna un nroPrestamo único y una tasaAnual (ejemplo: 0.03f)
         int nroPrestamo = generarNroPrestamoUnico();
-        float tasaAnual = 0.03f; // O agrega tasaAnual al DTO
+        float tasaAnual = 0.03f;
         PrestamoPersonal prestamo = new PrestamoPersonal(
             nroPrestamo,
             dto.getPlazoEnMeses(),
@@ -62,29 +60,37 @@ public class PrestamoController {
         listadoPrestamos.add(prestamo);
     }
 
-    public void pagarCuotaPrestamo(int nroPrestamo) {
+    public PrestamoPersonalDTO pagarCuotaPrestamoDTO(int nroPrestamo) throws Exception {
         ClienteController clienteController = ClienteController.getInstance();
         Prestamo prestamo = buscarPrestamo(nroPrestamo);
-        if (prestamo == null) return;
+        if (prestamo == null) return null;
+        if (prestamo.getCuotasRestantes() <= 0) {
+            throw new Exception("No hay deuda pendiente.");
+        }
         Cliente cliente = clienteController.buscarClientePorNro(prestamo.getNroCliente());
-        if (cliente == null) return;
+        if (cliente == null) return null;
         float valorCuota = prestamo.obtenerValorCuota();
+        prestamo.registrarPagoCuota();
         cliente.getCajaAhorro().debitarDinero(valorCuota);
         cliente.getCajaAhorro().registrarOperacion(LocalDateTime.now(), TipoOperacion.EXTRACCION, valorCuota);
-    }
+        return new PrestamoPersonalDTO(
+            cliente.getNroCliente(),
+            cliente.getCajaAhorro().getSaldo(),
+            prestamo.getCuotasRestantes(),
+            prestamo.getPlazoEnMeses(),
+            prestamo.getMontoPrestado()
+        );
+        }
 
     public int consultarCuotasPendientes(int nroPrestamo) {
-        // Implementar lógica si es necesario
         return 0;
     }
 
     public int consultarCuotasSaldadas(int nroPrestamo) {
-        // Implementar lógica si es necesario
         return 0;
     }
 
     public Prestamo buscarPrestamoActivoPorCliente(int nroCliente) {
-        // Implementar lógica si es necesario
         return null;
     }
 

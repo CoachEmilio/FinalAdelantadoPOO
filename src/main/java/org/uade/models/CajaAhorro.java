@@ -20,7 +20,11 @@ public class CajaAhorro {
     }
 
     public void debitarDinero(float dinero){
-        this.saldo -= dinero;
+        if (dinero >= saldo) {
+            saldo = 0;
+        } else {
+            saldo -= dinero;
+        }
     }
 
     public void registrarOperacion(LocalDateTime fecha, TipoOperacion tipo, float monto){
