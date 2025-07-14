@@ -29,4 +29,16 @@ public class Cliente {
     public CajaAhorro getCajaAhorro() {
         return cajaAhorro;
     }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public String getNombreCompleto() {
+        return nombreCompleto;
+    }
+
+    public String getDomicilioLegal() {
+        return domicilioLegal;
+    }
 }

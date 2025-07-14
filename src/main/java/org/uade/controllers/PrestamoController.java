@@ -27,8 +27,17 @@ public class PrestamoController {
     public Prestamo altaPrestamoPersonal(PrestamoPersonalDTO dto) {
         Cliente cliente = ClienteController.getInstance().buscarClientePorNro(dto.getNroCliente());
         if (cliente == null) return null;
-        PrestamoPersonal prestamo = new PrestamoPersonal(cliente, dto.getMontoPrestado(), dto.getPlazoEnMeses());
-        prestamos.add(prestamo);
+        // Asigna un nroPrestamo único y una tasaAnual (ejemplo: 0.03f)
+        int nroPrestamo = generarNroPrestamoUnico();
+        float tasaAnual = 0.03f; // O agrega tasaAnual al DTO
+        PrestamoPersonal prestamo = new PrestamoPersonal(
+            nroPrestamo,
+            dto.getPlazoEnMeses(),
+            dto.getNroCliente(),
+            dto.getMontoPrestado(),
+            tasaAnual
+        );
+        listadoPrestamos.add(prestamo);
         return prestamo;
     }
 

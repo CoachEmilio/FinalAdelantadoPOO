@@ -3,6 +3,7 @@ package org.uade.controllers;
 import org.uade.models.Cliente;
 import org.uade.models.CajaAhorro;
 import org.uade.models.Operacion;
+import org.uade.dtos.ClienteDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,22 @@ public class ClienteController {
         return instance;
     }
 
+    // Nuevo metodo que devuelve ClienteDTO
+    public ClienteDTO buscarClienteDTOPorNro(int nroCliente) {
+        for (Cliente cliente : listadoClientes) {
+            if (cliente.getNroCliente() == nroCliente) {
+                return new ClienteDTO(
+                    cliente.getNroCliente(),
+                    cliente.getDocumento(),
+                    cliente.getNombreCompleto(),
+                    cliente.getDomicilioLegal()
+                );
+            }
+        }
+        return null;
+    }
+
+    // El metodo original puede seguir existiendo para lógica interna
     public Cliente buscarClientePorNro(int nroCliente) {
         for (Cliente cliente : listadoClientes) {
             if (cliente.getNroCliente() == nroCliente) {
@@ -36,7 +53,7 @@ public class ClienteController {
 
     public List<Operacion> listarOperaciones(int nroCliente) {
         Cliente cliente = buscarClientePorNro(nroCliente);
-        if (cliente == null) return null;
+        if (cliente == null || cliente.getCajaAhorro() == null) return null;
         return cliente.getCajaAhorro().listarOperaciones();
     }
 }
