@@ -31,8 +31,18 @@ Enumeraciones y tipos:
 Se utilizó la enumeración TipoOperacion para distinguir entre ingresos y extracciones.
 
 
+## Cambios realizados hoy
+<hr>
+Se revisó la lógica de pago de cuotas para asegurar que el saldo de la caja de ahorro quede en cero tras pagar todas las cuotas.
+Se ajustó el saldo inicial del cliente para pruebas, calculando el monto total a pagar por el préstamo (suma de las 12 cuotas).
+Se verificó que el método de débito en CajaAhorro no permita saldo negativo y que la validación de deuda pendiente funcione correctamente.
+Se confirmó que la vista de pago de cuota muestra el saldo actualizado y la cantidad de cuotas restantes.
+Se aclaró que el modelo es una simplificación para pruebas y simulaciones, pero respeta la lógica bancaria básica.
+<hr>
+
 Notas
 El sistema respeta las relaciones y multiplicidades del diagrama.
 Se siguió el sistema francés para el cálculo de cuotas.
 El código está organizado por paquetes y usa Maven para la gestión del proyecto.
-<hr></hr> Cualquier duda o consulta, estoy a disposición.
+
+Cualquier duda o consulta, estoy a disposición.
