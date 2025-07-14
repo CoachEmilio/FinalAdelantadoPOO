@@ -4,6 +4,7 @@ participant "ClienteController" as CC
 participant "PrestamoController" as PC
 participant "Cliente" as C
 participant "CajaAhorro" as CA
+participant "PrestamoPersonal" as PP
 
 ' El cliente inicia la solicitud de préstamo personal
 Cliente -> CC: solicitarPrestamo(nroCliente, monto, plazo)
@@ -19,8 +20,11 @@ deactivate C
 CC -> PC: registrarPrestamoPersonal(nroPrestamo, plazo, nroCliente, monto, tasa)
 activate PC
 
-' Se crea el objeto PrestamoPersonal
-PC -> PC: crear PrestamoPersonal
+' Se crea la instancia concreta de PrestamoPersonal
+PC -> PP: new PrestamoPersonal(...)
+activate PP
+PC <-- PP: PrestamoPersonal
+deactivate PP
 
 ' Se acredita el dinero en la caja de ahorro del cliente
 PC -> C: getCajaAhorro()

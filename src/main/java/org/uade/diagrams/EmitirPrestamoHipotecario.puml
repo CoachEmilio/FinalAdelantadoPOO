@@ -5,6 +5,7 @@ participant "PrestamoController" as PC
 participant "Cliente" as C
 participant "CajaAhorro" as CA
 participant "Cliente (Garante)" as CG
+participant "PrestamoHipotecario" as PH
 
 ' El cliente solicita emitir un préstamo hipotecario
 Cliente -> CC: solicitarPrestamoHipotecario(nroCliente, monto, plazo, tasa, nroClienteGarante)
@@ -26,8 +27,11 @@ deactivate CG
 CC -> PC: registrarPrestamoHipotecario(nroPrestamo, plazo, nroCliente, monto, tasa, nroClienteGarante)
 activate PC
 
-' Se crea el objeto PrestamoHipotecario
-PC -> PC: crear PrestamoHipotecario
+' Se crea la instancia concreta de PrestamoHipotecario
+PC -> PH: new PrestamoHipotecario(...)
+activate PH
+PC <-- PH: PrestamoHipotecario
+deactivate PH
 
 ' Se acredita el dinero en la caja de ahorro del cliente (menos 1% de gastos notariales)
 PC -> C: getCajaAhorro()

@@ -16,6 +16,10 @@ activate P
 PC <-- P: Prestamo
 deactivate P
 
+' El controller obtiene el valor de la cuota
+PC -> P: obtenerValorCuota()
+PC <-- P: valorCuota
+
 ' El controller busca el cliente asociado al préstamo
 PC -> CC: buscarClientePorNro(P.getNroCliente())
 activate CC
@@ -37,4 +41,4 @@ deactivate C
 PC --> Cliente: cuota pagada
 deactivate PC
 
-@endumluml
+@enduml
