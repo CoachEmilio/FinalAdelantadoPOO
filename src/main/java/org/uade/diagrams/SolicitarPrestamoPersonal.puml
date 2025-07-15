@@ -31,7 +31,7 @@ opt cuotas => 12 && <= 24
     C --> PC: caja de ahorro encontrada
     deactivate C
 
-    PC -> P: crear Prestamo Personal (double monto, int plazo, double tasa, Cliente cliente)
+    PC -> P: PrestamoPersonal (double monto, int plazo, double tasa, Cliente cliente)
     activate P
     PC <-- P: prestamo Personal creado
     deactivate P
