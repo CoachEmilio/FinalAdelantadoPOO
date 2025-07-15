@@ -24,7 +24,6 @@ public class PrestamoController {
         return instance;
     }
 
-    // Eliminé la duplicacion de código en altaPrestamoPersonal
     public PrestamoPersonal altaPrestamoPersonal(PrestamoPersonalDTO dto) {
         Cliente cliente = ClienteController.getInstance().buscarClientePorNro(dto.getNroCliente());
         if (cliente == null) return null;
@@ -43,6 +42,7 @@ public class PrestamoController {
         CajaAhorro caja = cliente.getCajaAhorro();
         caja.acreditarDinero(dto.getMontoPrestado());
         Operacion operacion = new Operacion(LocalDateTime.now(), TipoOperacion.INGRESO, dto.getMontoPrestado());
+        //metodo que me sirve para registrar la operación en el diagrama de secuencia
         caja.registrarOperacion(operacion);
 
         return prestamo;
@@ -58,11 +58,13 @@ public class PrestamoController {
         return max + 1;
     }
 
-    public void registrarPrestamoHipotecario(int nroPrestamo, int plazoEnMeses, int nroCliente, float montoPrestado, float tasaAnual, int nroClienteGarante) {
+    // Metodo para alta de préstamo hipotecario que le cambie el nombre segun enunciado
+    public void altaPrestamoHipotecario(int nroPrestamo, int plazoEnMeses, int nroCliente, float montoPrestado, float tasaAnual, int nroClienteGarante) {
         PrestamoHipotecario prestamo = new PrestamoHipotecario(nroPrestamo, plazoEnMeses, nroCliente, montoPrestado, tasaAnual, nroClienteGarante);
         listadoPrestamos.add(prestamo);
     }
 
+    //deberia estar acorde al enunciado del diagrama de secuencia pagarcuotaPrestamoPersonal
     public PrestamoPersonalDTO pagarCuotaPrestamoDTO(int nroPrestamo) throws Exception {
         ClienteController clienteController = ClienteController.getInstance();
         Prestamo prestamo = buscarPrestamo(nroPrestamo);

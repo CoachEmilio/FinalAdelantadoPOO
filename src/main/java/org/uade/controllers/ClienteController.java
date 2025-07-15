@@ -26,7 +26,6 @@ public class ClienteController {
         return instance;
     }
 
-    // Nuevo metodo que devuelve ClienteDTO
     public ClienteDTO buscarClienteDTOPorNro(int nroCliente) {
         for (Cliente cliente : listadoClientes) {
             if (cliente.getNroCliente() == nroCliente) {
@@ -41,7 +40,6 @@ public class ClienteController {
         return null;
     }
 
-    // El metodo original puede seguir existiendo para lógica interna
     public Cliente buscarClientePorNro(int nroCliente) {
         for (Cliente cliente : listadoClientes) {
             if (cliente.getNroCliente() == nroCliente) {

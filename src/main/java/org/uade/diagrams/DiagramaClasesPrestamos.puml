@@ -81,9 +81,10 @@ PrestamoController "1" -- "1" ClienteController
 Prestamo "1" o-- "1" Cliente
 Prestamo <|-- PrestamoPersonal
 Prestamo <|-- PrestamoHipotecario
-CajaAhorro "1" o-- "0..*" Operacion
+CajaAhorro "1" *-- "0..*" Operacion
+'operacion existe gracias a la caja de ahorro
 Cliente "1" *-- "1" CajaAhorro
-Operacion "1" -- "0..*" TipoOperacion
+Operacion --  TipoOperacion
 
 
 @enduml
