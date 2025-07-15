@@ -25,22 +25,21 @@ end
 CC --> PC: cliente encontrado
 deactivate CC
 
-opt cuotas => 12 && <= 24
-    PC -> C: getCaja(): CajaAhorro
-    activate C
-    C --> PC: caja de ahorro encontrada
-    deactivate C
+PC -> C: getCaja(): CajaAhorro
+activate C
+C --> PC: caja de ahorro encontrada
+deactivate C
 
-    PC -> P: PrestamoPersonal (double monto, int plazo, double tasa, Cliente cliente)
-    activate P
-    PC <-- P: prestamo Personal creado
-    deactivate P
+PC -> P: PrestamoPersonal (double monto, int plazo, double tasa, Cliente cliente)
+activate P
+PC <-- P: prestamo Personal creado
+deactivate P
 
-    PC -> CA: agregarSaldo(float saldo)
-    activate CA
-    CA --> PC: true
-    deactivate CA
-end
+PC -> CA: agregarSaldo(float saldo)
+activate CA
+CA --> PC: true
+deactivate CA
+
 PC -> O: crearOperacion(Date fecha, TipoOperacion tipo, float monto)
 activate O
 O --> PC: Operacion registrada
