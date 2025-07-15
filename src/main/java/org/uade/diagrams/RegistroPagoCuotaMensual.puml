@@ -5,40 +5,64 @@ participant "Prestamo" as P
 participant "ClienteController" as CC
 participant "Cliente" as C
 participant "CajaAhorro" as CA
+participant "Operacion" as O
 
-' El cliente solicita pagar la cuota mensual de un préstamo
 Cliente -> PC: pagarCuotaPrestamo(nroPrestamo)
 activate PC
 
-' El controller busca el préstamo por su número
-PC -> P: buscarPrestamo(nroPrestamo)
+' Buscar préstamo (loop y opt)
+loop cada préstamo<listaPrestamos>
+
+
+    opt si nroPrestamo coincide
+        PC -> P: getNroPrestamo()
+        activate P
+        PC <-- P: Return Prestamo
+        deactivate P
+    end
+end
+
+' Obtener valor de la cuota
+PC -> P: obtenerValorCuota()
 activate P
-PC <-- P: Prestamo
+PC <-- P: valorCuota
 deactivate P
 
-' El controller obtiene el valor de la cuota
-PC -> P: obtenerValorCuota()
-PC <-- P: valorCuota
-
-' El controller busca el cliente asociado al préstamo
+' Buscar cliente solicitante
 PC -> CC: buscarClientePorNro(P.getNroCliente())
 activate CC
-PC <-- CC: Cliente
+' Buscar cliente (loop y opt)
+loop por cada cliente en listadoClientes
+
+    opt si nroCliente coincide
+        CC -> C: getNroCliente()
+        activate C
+        CC <-- C: Cliente
+        deactivate C
+    end
+end
+CC -> PC: Cliente
 deactivate CC
 
-' Se obtiene la caja de ahorro del cliente
+' Obtener caja de ahorro
 PC -> C: getCajaAhorro()
 activate C
+C --> PC: CajaAhorro
+deactivate C
+
+' Debitar dinero
 PC -> CA: debitarDinero(valorCuota)
 activate CA
 
-' Se registra la operación de extracción en la caja de ahorro
-PC -> CA: registrarOperacion(fecha, EXTRACCION, valorCuota)
+' Crear operación y registrar
+PC -> CA: registrarOperacion(Operacion)
 deactivate CA
-deactivate C
 
-' Se confirma el pago al cliente
+PC -> O: Operacion(fecha, tipoOperacion EXTRACCION, valorCuota)
+activate O
+O --> PC: Operacion Registrada
+deactivate O
+
 PC --> Cliente: cuota pagada
 deactivate PC
-
 @enduml

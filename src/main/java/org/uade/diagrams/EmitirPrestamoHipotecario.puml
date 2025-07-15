@@ -1,55 +1,61 @@
 @startuml
-actor Cliente
-participant "ClienteController" as CC
-participant "PrestamoController" as PC
-participant "Cliente" as C
-participant "CajaAhorro" as CA
-participant "Cliente (Garante)" as CG
-participant "PrestamoHipotecario" as PH
+        actor Cliente
+        participant "ClienteController" as CC
+        participant "Cliente" as C
+        participant "Cliente (Garante)" as CG
+        participant "PrestamoController" as PC
+        participant "PrestamoHipotecario" as PH
+        participant "Operacion" as O
+        participant "CajaAhorro" as CA
 
-' El cliente solicita emitir un préstamo hipotecario
-Cliente -> CC: solicitarPrestamoHipotecario(nroCliente, monto, plazo, tasa, nroClienteGarante)
-activate CC
+        Cliente -> CC: solicitarPrestamoHipotecario(nroCliente, monto, plazo, tasa, nroClienteGarante)
+        activate CC
 
-' El controller busca el cliente solicitante
-CC -> C: buscarClientePorNro(nroCliente)
-activate C
-CC <-- C: Cliente
-deactivate C
+        ' Buscar cliente solicitante (loop y opt)
+        loop por cada cliente en listadoClientes
+            opt si nroCliente coincide
+                CC -> C: getNroCliente()
+                CC <-- C: Cliente
+            end
+        end
 
-' El controller busca el cliente garante
-CC -> CG: buscarClientePorNro(nroClienteGarante)
-activate CG
-CC <-- CG: Cliente (Garante)
-deactivate CG
+        ' Buscar cliente garante (loop y opt)
+        loop por cada cliente en listadoClientes
+            opt si nroCliente coincide
+                CC -> CG: getNroCliente()
+                CC <-- CG: Cliente (Garante)
+            end
+        end
 
-' El controller delega la creación del préstamo hipotecario
-CC -> PC: registrarPrestamoHipotecario(nroPrestamo, plazo, nroCliente, monto, tasa, nroClienteGarante)
-activate PC
+        CC -> PC: registrarPrestamoHipotecario(nroPrestamo, plazo, nroCliente, monto, tasa, nroClienteGarante)
+        activate PC
 
-' Se crea la instancia concreta de PrestamoHipotecario
-PC -> PH: new PrestamoHipotecario(...)
-activate PH
-PC <-- PH: PrestamoHipotecario
-deactivate PH
+        PC -> PH: PrestamoHipotecario(nroPrestamo, plazo, C, monto, tasa, CG)
+        activate PH
+        PC <-- PH: New PrestamoHipotecario
+        deactivate PH
+        PC --> CC: confirmación de préstamo hipotecario
+        deactivate PC
 
-' Se acredita el dinero en la caja de ahorro del cliente (menos 1% de gastos notariales)
-PC -> C: getCajaAhorro()
-activate C
-PC -> CA: acreditarDinero(monto - gastosNotariales)
-activate CA
+        CC -> C: getCajaAhorro(nroCliente)
+        activate C
+        C --> CC: CajaAhorro
+        deactivate C
 
-' Se registra la operación de ingreso en la caja de ahorro
-PC -> CA: registrarOperacion(fecha, INGRESO, monto - gastosNotariales)
-deactivate CA
-deactivate C
 
-' Se confirma la operación al controller
-PC --> CC: confirmación
-deactivate PC
+        CC -> CA: acreditarSaldo(saldo - gastosOperativos)
+        activate CA
+        CA --> CC: CajaAhorro actualizada
+        deactivate CA
 
-' El controller informa al cliente que el préstamo fue emitido
-CC --> Cliente: préstamo hipotecario emitido
-deactivate CC
+        CC -> O: crearOperacion(fecha, INGRESO, monto - gastosNotariales)
+        activate O
+        O --> CC: Operacion Registrada Lista<CajaAhorro>
+        deactivate O
 
-@enduml
+        deactivate C
+        deactivate PC
+
+        CC --> Cliente: préstamo hipotecario emitido
+        deactivate CC
+        @enduml
