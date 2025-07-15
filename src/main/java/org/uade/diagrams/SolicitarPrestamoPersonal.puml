@@ -5,6 +5,7 @@ participant "ClienteController" as CC
 participant "Cliente" as C
 participant "CajaAhorro" as CA
 participant "Prestamo: PrestamoPersonal" as P
+participant "Operacion" as O
 
 Cliente -> PC: solicitarPrestamoPersonal(SolicitarPrestamoDTO p): int
 activate PC
@@ -24,7 +25,7 @@ end
 CC --> PC: cliente encontrado
 deactivate CC
 
-opt plazo es mayor a 12 y menor a 120
+opt cuotas => 12 && <= 24
     PC -> C: getCaja(): CajaAhorro
     activate C
     C --> PC: caja de ahorro encontrada
@@ -40,7 +41,16 @@ opt plazo es mayor a 12 y menor a 120
     CA --> PC: true
     deactivate CA
 end
+PC -> O: crearOperacion(Date fecha, TipoOperacion tipo, float monto)
+activate O
+O --> PC: Operacion registrada
+deactivate O
+
+PC -> CA : registrarOperacionCajaAhorro(Operacion operacion)
+activate CA
+CA --> PC: Operacion registrada en CajaAhorro
+deactivate CA
+
 
 PC --> Cliente: Prestamo confirmado
-deactivate PC
 @enduml
