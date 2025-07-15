@@ -1,8 +1,13 @@
 @startuml
+'IMPORTANTE
+'ejecutado los cambios que hice en emitir prestamohipotecario en este diagrama
+'ClienteEncontrado es el cliente que se encuentra en la caja de ahorro
+'CE
 actor Cliente
 participant "PrestamoController" as PC
 participant "ClienteController" as CC
-participant "Cliente" as C
+participant "Clientes: Cliente" as C
+participant "ClienteEncontrado: Cliente" as CE
 participant "CajaAhorro" as CA
 participant "Prestamo: PrestamoPersonal" as P
 participant "Operacion" as O
@@ -14,25 +19,27 @@ PC -> CC: getCliente(int dni): Cliente
 activate CC
 
 loop Por cada cliente
-    CC -> C: getDni(): int
-    activate C
-    opt dni coincide
+
+    opt nroCliente coincide
+        CC -> C: nroCliente(): int
+        activate C
         CC <-- C: cliente
+        deactivate C
     end
-    deactivate C
+
 end
 
 CC --> PC: cliente encontrado
 deactivate CC
 
-PC -> C: getCaja(): CajaAhorro
-activate C
-C --> PC: caja de ahorro encontrada
-deactivate C
+PC -> CE: getCaja(): CajaAhorro
+activate CE
+CE --> PC: caja de ahorro encontrada
+deactivate CE
 
 PC -> P: PrestamoPersonal (double monto, int plazo, double tasa, Cliente cliente)
 activate P
-PC <-- P: prestamo Personal creado
+PC <-- P: <<create>> prestamo Personal creado
 deactivate P
 
 PC -> CA: agregarSaldo(float saldo)
@@ -40,7 +47,7 @@ activate CA
 CA --> PC: true
 deactivate CA
 
-PC -> O: crearOperacion(Date fecha, TipoOperacion tipo, float monto)
+PC -> O: <<create>> Operacion(Date fecha, TipoOperacion tipo, float monto)
 activate O
 O --> PC: Operacion registrada
 deactivate O

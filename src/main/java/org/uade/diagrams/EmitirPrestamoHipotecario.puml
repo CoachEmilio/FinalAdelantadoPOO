@@ -1,61 +1,72 @@
 @startuml
-        actor Cliente
-        participant "ClienteController" as CC
-        participant "Cliente" as C
-        participant "Cliente (Garante)" as CG
-        participant "PrestamoController" as PC
-        participant "PrestamoHipotecario" as PH
-        participant "Operacion" as O
-        participant "CajaAhorro" as CA
+actor Cliente
+participant "PrestamoController" as PC
+participant "PrestamoHipotecario" as PH
+participant "ClienteController" as CC
+participant "Clientes: Cliente" as C
+participant "ClienteEncontrado: Cliente" as CE
+participant "PrestamoHipotecario" as PH
+participant "Operacion" as O
+participant "CajaAhorro" as CA
 
-        Cliente -> CC: solicitarPrestamoHipotecario(nroCliente, monto, plazo, tasa, nroClienteGarante)
-        activate CC
+Cliente -> PC: AltaPrestamoHipotecario(nroCliente, monto, plazo, tasa, nroClienteGarante)
 
-        ' Buscar cliente solicitante (loop y opt)
-        loop por cada cliente en listadoClientes
-            opt si nroCliente coincide
-                CC -> C: getNroCliente()
-                CC <-- C: Cliente
-            end
-        end
 
-        ' Buscar cliente garante (loop y opt)
-        loop por cada cliente en listadoClientes
-            opt si nroCliente coincide
-                CC -> CG: getNroCliente()
-                CC <-- CG: Cliente (Garante)
-            end
-        end
-
-        CC -> PC: registrarPrestamoHipotecario(nroPrestamo, plazo, nroCliente, monto, tasa, nroClienteGarante)
-        activate PC
-
-        PC -> PH: PrestamoHipotecario(nroPrestamo, plazo, C, monto, tasa, CG)
-        activate PH
-        PC <-- PH: New PrestamoHipotecario
-        deactivate PH
-        PC --> CC: confirmación de préstamo hipotecario
-        deactivate PC
-
-        CC -> C: getCajaAhorro(nroCliente)
+activate PC
+PC -> CC: buscarClientePorNro(nroCliente)
+activate CC
+' Buscar cliente solicitante (loop y opt)
+loop por cada cliente en listadoClientes
+    opt si nroCliente coincide
+        CC -> C: getNroCliente()
         activate C
-        C --> CC: CajaAhorro
+        CC <-- C: Cliente
         deactivate C
+    end
+end
+CC -> PC: Cliente encontrado
+deactivate CC
 
-
-        CC -> CA: acreditarSaldo(saldo - gastosOperativos)
-        activate CA
-        CA --> CC: CajaAhorro actualizada
-        deactivate CA
-
-        CC -> O: crearOperacion(fecha, INGRESO, monto - gastosNotariales)
-        activate O
-        O --> CC: Operacion Registrada Lista<CajaAhorro>
-        deactivate O
-
+PC -> CC: buscarCliente(nroClienteGarante)
+activate CC
+' Buscar cliente garante (loop y opt)
+loop por cada cliente en listadoClientes
+    opt si nroCliente coincide
+        CC -> C: getNroCliente()
+        activate C
+        CC <-- C: Cliente (Garante)
         deactivate C
-        deactivate PC
+    end
+end
+CC -> PC: Cliente encontrado
+deactivate CC
 
-        CC --> Cliente: préstamo hipotecario emitido
-        deactivate CC
-        @enduml
+PC -> PH: <<Create>> PrestamoHipotecario(nroPrestamo, plazo, C, monto, tasa, CG)
+activate PH
+PC <-- PH: PrestamoHipotecario
+deactivate PH
+
+PC -> CE: getCajaAhorro(nroCliente)
+activate CE
+CE --> PC: CajaAhorro
+deactivate CE
+
+PC -> CA: acreditarSaldo(saldo - gastosOperativos)
+activate CA
+CA --> PC: CajaAhorro actualizada
+deactivate CA
+
+PC -> O: <<create>> Operacion(fecha, INGRESO, monto - gastosNotariales)
+activate O
+O --> PC: Operacion Registrada
+deactivate O
+
+PC -> CA: registrarOperacionCajaAhorro(Operacion)
+activate CA
+CA --> PC: Operacion registrada en CajaAhorro
+deactivate CA
+deactivate C
+
+PC --> Cliente: préstamo hipotecario emitido
+deactivate PC
+@enduml

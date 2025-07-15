@@ -1,13 +1,14 @@
 @startuml
 actor Cliente
 participant "PrestamoController" as PC
-participant "Prestamo" as P
+participant "Prestamos: Prestamo" as P
+participant "Prestamo: PrestamoPersonal" as PP
 participant "ClienteController" as CC
 participant "Cliente" as C
 participant "CajaAhorro" as CA
 participant "Operacion" as O
 
-Cliente -> PC: pagarCuotaPrestamo(nroPrestamo)
+Cliente -> PC: pagarCuotaPrestamoPersonal(nroPrestamo)
 activate PC
 
 ' Buscar préstamo (loop y opt)
@@ -21,28 +22,26 @@ loop cada préstamo<listaPrestamos>
         deactivate P
     end
 end
+PC -> PP: getCliente(Cliente)
+activate PP
+PP -> PC: Cliente
+deactivate PP
+
+'getCuotasRestantes
+opt si cuotasRestantes > 0
+    PC -> PP: getCuotasRestantes()
+    activate PP
+    PP --> PC: cuotasRestantes
+    deactivate PP
+end
 
 ' Obtener valor de la cuota
-PC -> P: obtenerValorCuota()
-activate P
-PC <-- P: valorCuota
-deactivate P
+PC -> PP: getValorCuota()
+activate PP
+PC <-- PP: valorCuota
+deactivate PP
+' Obtener cliente
 
-' Buscar cliente solicitante
-PC -> CC: buscarClientePorNro(P.getNroCliente())
-activate CC
-' Buscar cliente (loop y opt)
-loop por cada cliente en listadoClientes
-
-    opt si nroCliente coincide
-        CC -> C: getNroCliente()
-        activate C
-        CC <-- C: Cliente
-        deactivate C
-    end
-end
-CC -> PC: Cliente
-deactivate CC
 
 ' Obtener caja de ahorro
 PC -> C: getCajaAhorro()
@@ -50,19 +49,29 @@ activate C
 C --> PC: CajaAhorro
 deactivate C
 
-' Debitar dinero
-PC -> CA: debitarDinero(valorCuota)
-activate CA
 
+' Crear operación de pago de cuota
+PC -> O: Operacion(fecha, tipoOperacion EXTRACCION, valorCuota)
+activate O
+' Registrar operación
+O --> PC: Operacion Registrada
+deactivate O
+
+'setCuotasRestantes(getCuotasRestantes--)
+'importante porque se actualiza el nro de cuotas restantes
+'como es un set no devuelve nada
+
+PC -> PP: setCuotasRestantes(cuotasRestantes - 1)
+activate PP
+deactivate PP
+
+' Debitar dinero
+PC -> CA: debitarSaldoCajaAhorro(valorCuota)
+activate CA
 ' Crear operación y registrar
 PC -> CA: registrarOperacion(Operacion)
 deactivate CA
 
-PC -> O: Operacion(fecha, tipoOperacion EXTRACCION, valorCuota)
-activate O
-O --> PC: Operacion Registrada
-deactivate O
-
-PC --> Cliente: cuota pagada
+PC --> Cliente: Cuota pagada
 deactivate PC
 @enduml
