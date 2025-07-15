@@ -4,34 +4,43 @@ participant "PrestamoController" as PC
 participant "ClienteController" as CC
 participant "Cliente" as C
 participant "CajaAhorro" as CA
+participant "Prestamo: PrestamoPersonal" as P
 
-Cliente -> PC: altaPrestamoPersonal(PrestamoPersonalDTO dto)
+Cliente -> PC: solicitarPrestamoPersonal(SolicitarPrestamoDTO p): int
 activate PC
 
-PC -> CC: buscarClientePorNro(dto.nroCliente)
+PC -> CC: getCliente(int dni): Cliente
 activate CC
 
-loop x cada cliente<listadoClientes>
-    CC -> C: getNroCliente()
+loop Por cada cliente
+    CC -> C: getDni(): int
     activate C
-    opt si nroCliente coincide
-        CC <-- C: Cliente
+    opt dni coincide
+        CC <-- C: cliente
     end
     deactivate C
 end
+
+CC --> PC: cliente encontrado
 deactivate CC
 
-PC -> C: getCajaAhorro()
-activate C
-C --> PC: CajaAhorro
-deactivate C
+opt plazo es mayor a 12 y menor a 120
+    PC -> C: getCaja(): CajaAhorro
+    activate C
+    C --> PC: caja de ahorro encontrada
+    deactivate C
 
-PC -> CA: acreditarDinero(dto.montoPrestado)
-activate CA
+    PC -> P: crear Prestamo Personal (double monto, int plazo, double tasa, Cliente cliente)
+    activate P
+    PC <-- P: prestamo Personal creado
+    deactivate P
 
-PC -> CA: registrarOperacion(Operacion)
-deactivate CA
+    PC -> CA: agregarSaldo(float saldo)
+    activate CA
+    CA --> PC: true
+    deactivate CA
+end
 
-PC --> Cliente: PrestamoPersonal
+PC --> Cliente: Prestamo confirmado
 deactivate PC
 @enduml

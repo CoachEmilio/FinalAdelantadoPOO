@@ -51,9 +51,10 @@ class PrestamoPersonal {
 }
 
 class PrestamoHipotecario {
-  -cliente: Cliente
+  -garante: Cliente
+  -tasaPreferencial: float
   +modificarTasaAnual(tasa: float): void
-  +PrestamoHipotecario(nroPrestamo: int, plazoEnMeses: int, nroCliente: int, montoPrestado: float, tasaAnual: float, nroClienteGarante: int)
+  +PrestamoHipotecario(nroPrestamo: int, plazoEnMeses: int, cliente: Cliente, montoPrestado: float, tasaAnual: float, garante: Cliente)
 }
 
 class ClienteController {
