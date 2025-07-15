@@ -75,7 +75,9 @@ public class PrestamoController {
         float valorCuota = prestamo.obtenerValorCuota();
         prestamo.registrarPagoCuota();
         cliente.getCajaAhorro().debitarDinero(valorCuota);
-        cliente.getCajaAhorro().registrarOperacion(LocalDateTime.now(), TipoOperacion.EXTRACCION, valorCuota);
+
+        Operacion operacion = new Operacion(LocalDateTime.now(), TipoOperacion.EXTRACCION, valorCuota);
+        cliente.getCajaAhorro().registrarOperacion(operacion);
         return new PrestamoPersonalDTO(
             cliente.getNroCliente(),
             cliente.getCajaAhorro().getSaldo(),
